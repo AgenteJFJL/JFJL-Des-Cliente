@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boguiee's Basics</title>
+  <script src="clay.js" defer></script>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Georgia, "Times New Roman", serif;
+      color: #20180c;
+      background: #f3e7b0;
+      --ink: #20180c;
+      --dark: #21180d;
+      --brown: #4a321b;
+      --brown-light: #684927;
+      --gold: #ead58e;
+      --gold-light: #f8efc9;
+      --gold-deep: #c9ad5e;
+      --border: #927541;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(135deg, #f8efc9, #eadb9d);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1,
+    h2 {
+      color: var(--dark);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--brown);
+      border-radius: 8px;
+      padding: 11px 20px;
+      color: var(--gold-light);
+      background: var(--dark);
+      cursor: pointer;
+      transition:
+        background-color 140ms ease,
+        color 140ms ease,
+        transform 140ms ease;
+    }
+
+    #cajaPanel .boton+.boton {
+      margin-left: 10px;
+    }
+
+    button:hover {
+      color: var(--dark);
+      background: var(--gold);
+      transform: translateY(-1px);
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    #cajaDialogo:focus-visible {
+      outline: 3px solid var(--gold-deep);
+      outline-offset: 3px;
+    }
+
+    .boton {
+      border: 1px solid var(--dark);
+      border-radius: 8px;
+      padding: 12px 24px;
+      color: var(--gold-light);
+      background: var(--dark);
+      font-family: Georgia, "Times New Roman", serif;
+      cursor: pointer;
+    }
+
+    .Boguiee {
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .atributo {
+      margin-bottom: 4px;
+      color: var(--brown);
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    img[src=""] {
+      display: none;
+    }
+
+    #divEntrada,
+    #divDenegado,
+    #divPanel {
+      width: min(100%, 1100px);
+      min-height: 100vh;
+      margin: 0 auto;
+      align-items: center;
+      padding: clamp(24px, 6vw, 72px);
+    }
+
+    #divEntrada>div,
+    #divDenegado>div,
+    #divPanel>div {
+      max-width: 620px;
+      padding: clamp(20px, 4vw, 42px) !important;
+    }
+
+    #divEntrada h1,
+    #divDenegado h1,
+    #divPanel h1 {
+      color: var(--brown) !important;
+    }
+
+    #divEntrada label {
+      display: block;
+      margin: 20px 0 7px;
+      font-weight: bold;
+    }
+
+    #divEntrada input {
+      display: block;
+      width: min(100%, 380px);
+      min-height: 42px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: var(--ink);
+      background: #fff9e5;
+    }
+
+    #divSelectJuego,
+    #divGameOver,
+    #divSeleccionHistoria,
+    #divFinalCharla {
+      min-height: 100vh;
+      padding: clamp(28px, 6vw, 72px);
+    }
+
+    #divSelectJuego {
+      justify-content: center;
+      gap: 22px !important;
+      background: radial-gradient(ellipse at center, #fff8df, #eadb9d);
+    }
+
+    #divSelectJuego>div {
+      flex-wrap: wrap;
+      gap: 16px !important;
+      padding: 20px !important;
+    }
+
+    .mates-juego,
+    .geo-juego {
+      width: 100%;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: clamp(20px, 4vw, 40px);
+      background: radial-gradient(ellipse at top, #fff8df, #eadb9d);
+    }
+
+    .geo-cabecera,
+    .geo-pregunta,
+    .geo-respuestas,
+    .geo-pista,
+    .mates-cabecera,
+    .mates-pregunta,
+    .mates-respuestas,
+    .mates-pista {
+      width: min(100%, 1000px);
+    }
+
+    .geo-cabecera,
+    .mates-cabecera {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .geo-progreso,
+    .mates-progreso {
+      color: var(--brown);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .geo-pregunta {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.8fr);
+      align-items: center;
+      gap: 30px;
+    }
+
+    .geo-personaje-pregunta,
+    .mates-pregunta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .geo-personaje,
+    .mates-personaje {
+      width: 120px;
+      height: auto;
+      flex: 0 0 auto;
+    }
+
+    .geo-texto-pregunta,
+    .mates-texto-pregunta {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      color: var(--ink);
+      background: var(--gold-light);
+      font-size: 20px;
+    }
+
+    .geo-imagen {
+      width: 100%;
+      max-height: 280px;
+      object-fit: contain;
+    }
+
+    .geo-respuestas,
+    .mates-respuestas {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .geo-opciones,
+    .mates-opciones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .geo-opciones button,
+    .mates-opciones button {
+      padding: 12px 24px;
+      font-size: 18px;
+    }
+
+    .bombilla {
+      display: flex;
+      min-width: 72px;
+      min-height: 72px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      border: 2px solid var(--brown);
+      border-radius: 12px;
+      padding: 6px;
+      color: var(--gold-light);
+      background: var(--dark);
+      box-shadow: 0 3px 8px rgba(32, 24, 12, 0.2);
+      cursor: pointer;
+    }
+
+    .bombilla:hover {
+      color: var(--dark);
+      background: var(--gold);
+      transform: translateY(-1px);
+    }
+
+    .bombilla-icon {
+      display: block;
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .bombilla-label {
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .geo-pista,
+    .mates-pista {
+      border: 1px solid var(--gold-deep);
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: var(--ink);
+      background: var(--gold-light);
+    }
+
+    #divGameOver {
+      box-sizing: border-box;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px !important;
+      text-align: center;
+      background: radial-gradient(ellipse at center, #fff8df, #eadb9d);
+    }
+
+    #divGameOver h1 {
+      color: var(--brown) !important;
+    }
+
+    #divGameOver>div {
+      max-width: 760px;
+    }
+
+    #divSeleccionHistoria {
+      box-sizing: border-box;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-align: center;
+      background: radial-gradient(ellipse at center, #fff8df, #eadb9d);
+    }
+
+    #divSeleccionHistoria h1 {
+      margin-bottom: 0;
+      font-size: clamp(32px, 5vw, 48px);
+    }
+
+    #divSeleccionHistoria>p {
+      margin-bottom: 12px;
+      color: var(--brown-light) !important;
+      font-size: 18px;
+    }
+
+    #listaHistorias {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      width: 100%;
+      margin: 10px 0 0 !important;
+    }
+
+    .story-choice {
+      min-width: 240px;
+      border: 2px solid var(--brown);
+      border-radius: 10px;
+      padding: 18px 26px;
+      color: var(--gold-light);
+      background: var(--dark);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    #btnVolverHistorias {
+      margin-top: 36px;
+    }
+
+    #divCharla {
+      display: none;
+      box-sizing: border-box;
+      width: 100%;
+      min-height: 100vh;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0;
+      padding: 76px clamp(16px, 4vw, 48px) 28px;
+      background-color: #302316;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+    }
+
+    .story-topbar {
+      position: absolute;
+      top: 14px;
+      left: clamp(16px, 4vw, 48px);
+      right: clamp(16px, 4vw, 48px);
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .story-topbar button {
+      padding: 8px 16px;
+      color: var(--gold-light);
+      background: rgba(33, 24, 13, 0.94);
+    }
+
+    #txtNombreNivel {
+      border: 1px solid rgba(248, 239, 201, 0.55);
+      border-radius: 6px;
+      padding: 8px 14px;
+      color: var(--gold-light) !important;
+      background: rgba(33, 24, 13, 0.82) !important;
+      font-size: 16px !important;
+    }
+
+    .story-characters {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: end;
+      justify-items: center;
+      width: 100%;
+      min-height: 0;
+      flex: 1;
+      padding: 0 2vw;
+    }
+
+    .story-character {
+      display: none;
+      width: min(100%, 300px);
+      max-width: 28vw;
+      max-height: min(48vh, 500px);
+      object-fit: contain;
+      object-position: center bottom;
+      filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.35));
+    }
+
+    #charImg1 {
+      grid-column: 1;
+    }
+
+    #charImg2 {
+      grid-column: 2;
+    }
+
+    #charImg3 {
+      grid-column: 3;
+    }
+
+    .story-dialogue-area {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      padding-top: 20px;
+    }
+
+    #cajaDialogo {
+      width: 100%;
+      min-height: 112px;
+      border: 2px solid rgba(248, 239, 201, 0.62);
+      border-radius: 14px;
+      padding: 18px 24px;
+      color: var(--gold-light);
+      background: rgba(33, 24, 13, 0.94);
+      cursor: pointer;
+    }
+
+    #nombreHablante {
+      margin-bottom: 8px;
+      color: var(--gold);
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    #textoDialogo {
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    #cajaOpciones {
+      display: none;
+      flex-wrap: wrap;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .story-option {
+      flex: 1 1 260px;
+      min-height: 48px;
+      border: 1px solid var(--brown);
+      border-radius: 8px;
+      padding: 12px 18px;
+      color: var(--gold-light);
+      background: var(--dark);
+      text-align: left;
+    }
+
+    #divFinalCharla {
+      box-sizing: border-box;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      text-align: center;
+      background: radial-gradient(ellipse at center, #fff8df, #eadb9d);
+    }
+
+    #divFinalCharla h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 48px) !important;
+      color: var(--brown) !important;
+    }
+
+    #txtMensajeFinalCharla {
+      max-width: 700px;
+      margin: 10px auto;
+      font-size: 22px !important;
+    }
+
+    .story-final-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .story-final-actions button:first-child {
+      color: var(--dark);
+      background: var(--gold);
+    }
+
+    @media (max-width: 700px) {
+
+      #divEntrada,
+      #divDenegado,
+      #divPanel {
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px !important;
+        text-align: center;
+      }
+
+      #divEntrada>div,
+      #divDenegado>div,
+      #divPanel>div {
+        padding: 16px !important;
+      }
+
+      .geo-pregunta {
+        grid-template-columns: 1fr;
+      }
+
+      .geo-personaje-pregunta,
+      .mates-pregunta {
+        align-items: flex-start;
+      }
+
+      .geo-personaje,
+      .mates-personaje {
+        width: 76px;
+      }
+
+      .geo-respuestas,
+      .mates-respuestas {
+        grid-template-columns: 1fr;
+      }
+
+      .geo-opciones,
+      .mates-opciones {
+        justify-content: center;
+      }
+
+      .bombilla {
+        justify-self: center;
+      }
+
+      #divCharla {
+        min-height: 100svh;
+        padding: 68px 14px 16px;
+      }
+
+      .story-topbar {
+        left: 14px;
+        right: 14px;
+      }
+
+      .story-characters {
+        min-height: 38vh;
+        padding: 0;
+      }
+
+      .story-character {
+        max-width: 31vw;
+        max-height: 38vh;
+      }
+
+      #cajaDialogo {
+        min-height: 100px;
+        padding: 16px;
+      }
+
+      #textoDialogo {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!--Primer div que se mostrara al principio-->
+  <div id="divEntrada" style="display: flex; justify-content: center; gap: 40px; padding: 60px">
+    <img src="" alt="Booguie dice Holaaaa" style="width: 200px" />
+    <div style="padding: 25px">
+      <h1>Bienvenido a BB</h1>
+      <p class="Boguiee">
+        Boguiee: Introduce tus datos para juegar, es como una especie de
+        inicio de sesión
+      </p>
+      <p class="Boguiee">Psst, debes tener al menos 10 años para jugar...</p>
+
+      <label> Ingresa tu nombre! </label>
+      <input type="text" id="nombreInput" name="Escribe tu nombre" />
+
+      <label> Ahora, debes de ingresar tu fecha de nacimiento </label>
+      <input type="date" id="fechaInput" />
+
+      <button id="botonEnviar" class="boton">Enviar datos</button>
+    </div>
+  </div>
+  <!--Segundo DIv mostrandote una info que estas bloqueado y que vuelvas a poner los datos-->
+  <div id="divDenegado" style="display: none; justify-content: center; gap: 40px; padding: 60px">
+    <img src="" alt="Boguie maniacote te dice DENEGADO" />
+    <div>
+      <h1>¡ACCESO DENEGADO!</h1>
+      <p class="Boguiee">Boguiee: ¡¿Pero qué has hecho!? arghmgdsfghhd....</p>
+      <h3>ALGUNO DE TUS DATOS NO ES VÁLIDO, VUELVE A INTRODUCIRLOS</h3>
+      <button onclick="volver()" id="botonVolveraINtentar" class="boton">
+        Volver a introducir los datos
+      </button>
+    </div>
+  </div>
+  <!--Tercer Div cuando inicias sesión correctamente-->
+  <div id="divPanel" style="display: none; justify-content: center; gap: 40px; padding: 60px">
+    <img src="" alt="Boguiee te saluda!!" />
+    <div id="cajaPanel">
+      <h1>¡Bienvenido!</h1>
+      <p class="atributo">Nombre:</p>
+      <span id="presentNombre" class="txtNombre"></span>
+      <p class="atributo">Edad:</p>
+      <span id="presentEdad" class="Años"></span>
+      <p class="atributo">Fecha de nacimiento:</p>
+      <span id="presentNacimiento"></span>
+      <p class="atributo">Tus logros:</p>
+      <span id="presentRecord"></span>
+      <h3>¡Ahora puedes juegar!</h3>
+      <button class="boton" onclick="selectModo()">Continuar</button>
+      <button class="boton" onclick="abrirVentanaInfo()">Ver mi ficha</button>
+    </div>
+  </div>
+  <!--Cuarto div, selecciona el modo, está oculto-->
+  <div id="divSelectJuego" style="
+        display: none;
+        justify-content: center;
+        gap: 40px;
+        padding: 60px;
+        flex-direction: column;
+        align-items: center;
+      ">
+    <h1 id="victima">Elige un modo de juego</h1>
+    <button onclick="aumentarTamaño()" class="boton">Aumentar tamaño de letra</button>
+    <!--Este sub div tiene las opciones-->
+    <div style="display: flex; justify-content: center; gap: 40px; padding: 60px">
+      <button onclick="empezarMates()" class="boton">Matemáticas</button>
+      <button onclick="empezarGeografia()" class="boton">Geografia</button>
+      <button onclick="mostrarSeleccionHistoria()" class="boton">
+        ¡Historias!
+      </button>
+      <button onclick="abrirVentanaInfo()" class="boton">Mi ficha y ayuda</button>
+    </div>
+  </div>
+
+  <!--Quinto Div, este es el del juego, y está oculto por ahora-->
+  <div id="divJuego" class="mates-juego" style="display: none">
+    <div class="mates-cabecera">
+      <span id="txtProgreso" class="mates-progreso"></span>
+      <button onclick="confirmarVolver()" class="boton">
+        Volver al panel
+      </button>
+    </div>
+    <div class="mates-pregunta">
+      <img class="mates-personaje" src="" alt="Boguiee te pregunta" />
+      <p id="txtPregunta" class="mates-texto-pregunta"></p>
+    </div>
+    <div class="mates-respuestas">
+      <div id="divOpciones" class="mates-opciones"></div>
+      <button type="button" onclick="mostrarPista()" title="Ver pista (cuesta 25 puntos)"
+        aria-label="Mostrar u ocultar pista" class="mates-bombilla bombilla">
+        <span class="bombilla-icon" aria-hidden="true">💡</span>
+        <span class="bombilla-label">Pista (-25)</span>
+      </button>
+    </div>
+    <div id="divPista" class="mates-pista" style="display: none">
+      <b>Pista: </b> <span id="txtPista"></span>
+    </div>
+  </div>
+  <!--Sexto div, el game over, puede ser victoria o derrota-->
+  <div id="divGameOver" style="
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 40px;
+      ">
+    <div>
+      <h1 id="tituloFinal" style="font-size: 48px; margin: 0"></h1>
+    </div>
+
+    <div style="display: flex; direction: row; align-items: center; gap: 20px">
+      <img src="" alt="OH NO HERMANO" style="max-width: 150px; height: auto" />
+      <p id="txtfraseGameOver" style="font-size: 20px; margin: 0"></p>
+    </div>
+
+    <div style="padding: 10px 20px">
+      <span id="txtFraseBoguiee" class="Boguiee"></span>
+    </div>
+    <p id="txtPuntuacionFinal" style="font-size: 20px; font-weight: bold; margin: 0"></p>
+
+    <button class="boton" onclick="volverPanel()">Volver al panel</button>
+  </div>
+  <!--Séptimo div, el modo de juego de Geografía-->
+  <div id="divGeoJuego" class="geo-juego" style="display: none">
+    <!--progreso volver como el anterior-->
+    <div class="geo-cabecera">
+      <span id="txtProgresoGeo" class="geo-progreso"></span>
+      <button onclick="confirmarVolverGeo()" class="boton">
+        Volver al panel
+      </button>
+    </div>
+    <!--Pregunta-->
+    <div class="geo-pregunta">
+      <div class="geo-personaje-pregunta">
+        <img class="geo-personaje" src="" alt="Boguiee te dice..." />
+        <p id="txtPreguntaGeo" class="geo-texto-pregunta"></p>
+      </div>
+      <div>
+        <img id="imgGeo" class="geo-imagen" src="" alt="imagen pregunta geo" />
+      </div>
+    </div>
+    <!--Alternativass-->
+    <div class="geo-respuestas">
+      <div id="divOpcionesGeo" class="geo-opciones"></div>
+      <button type="button" onclick="mostrarPistaGeo()" title="Ver pista (cuesta 25 puntos)"
+        aria-label="Mostrar u ocultar pista" class="bombilla">
+        <span class="bombilla-icon" aria-hidden="true">💡</span>
+        <span class="bombilla-label">Pista (-25)</span>
+      </button>
+    </div>
+    <!--pista-->
+    <div id="divPistaGeo" class="geo-pista" style="display: none">
+      <b>Pista: </b> <span id="txtPistaGeo"></span>
+    </div>
+  </div>
+  <!--Octavo div, el modo de juego de Historia-->
+  <div id="divSeleccionHistoria" style="display: none">
+    <h1>Elige una historia</h1>
+    <p>
+      Cada historia tiene sus propias decisiones y finales.
+    </p>
+    <div id="listaHistorias">
+      <!-- los botones se generan desde JS -->
+    </div>
+    <button id="btnVolverHistorias" class="boton" onclick="volverPanel()">
+      Volver al panel
+    </button>
+  </div>
+  <!-- ============ DIV 9: CHARLA / NOVELA VISUAL (oculto) ============ -->
+  <div id="divCharla" style="display: none">
+    <!-- Barra superior sutil -->
+    <div class="story-topbar">
+      <button onclick="confirmarVolverCharla()" class="boton">
+        ◀ Panel
+      </button>
+      <span id="txtNombreNivel">
+      </span>
+    </div>
+
+    <!-- Personajes: 3 slots alineados abajo -->
+    <div class="story-characters">
+      <img id="charImg1" src="" alt="" class="story-character" />
+      <img id="charImg2" src="" alt="" class="story-character" />
+      <img id="charImg3" src="" alt="" class="story-character" />
+    </div>
+
+    <!-- Diálogo y opciones, apilados debajo de los personajes -->
+    <div class="story-dialogue-area">
+      <!-- Cuadro de diálogo (clickeable si no hay opciones) -->
+      <div id="cajaDialogo" onclick="avanzarPanel()" onkeydown="manejarTeclaDialogo(event)" tabindex="0">
+        <div id="nombreHablante"></div>
+        <div id="textoDialogo"></div>
+      </div>
+
+      <!-- Opciones de decisión, sólo si el panel las define -->
+      <div id="cajaOpciones">
+        <!-- los botones se generan desde JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DIV 10: FINAL DE CHARLA (oculto) ============ -->
+  <div id="divFinalCharla" style="display: none">
+    <h1>FIN DE LA HISTORIA</h1>
+    <p id="txtMensajeFinalCharla"></p>
+    <div class="story-final-actions">
+      <button onclick="reintentarNivel()">
+        Reintentar nivel
+      </button>
+      <button class="boton" onclick="volverPanel()">Volver al panel</button>
+    </div>
+  </div>
+</body>
+
+</html>
